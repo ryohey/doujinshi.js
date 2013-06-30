@@ -21,7 +21,7 @@ module.exports = function(jpgFilePath, complete){
         return complete(err);
       })
       .on("complete", function(data) {
-        $ = cheerio.load(data);
+        var $ = cheerio.load(data);
         var arr = [];
         $("#main .round_middle,#main .round_middle2").each(function(){
           var bookinfo = $(this).find(".bookinfo2");
