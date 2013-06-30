@@ -8,8 +8,7 @@ module.exports = function(jpgFilePath, complete){
       restler.post("http://doujinshi.mugimugi.org/IMGSERV/socket.php", {
           multipart: true,
           headers:{
-            'Cookie': 'LANG=1',    //English
-            'Cookie': 'AGE=18',
+            'Cookie': 'LANG=1; AGE=18', // LANG=1 is English.
             'Accept': '*/*',
             'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Intel Mac OS X 10.6; rv:7.0.1) Gecko/20100101 Firefox/7.0.1"
           },
