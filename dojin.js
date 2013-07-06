@@ -8,8 +8,7 @@ module.exports = function(jpgFilePath, complete){
       restler.post("http://doujinshi.mugimugi.org/IMGSERV/socket.php", {
           multipart: true,
           headers:{
-            'Cookie': 'LANG=1',    //English
-            'Cookie': 'AGE=18',
+            'Cookie': 'LANG=1; AGE=18', // LANG=1 is English.
             'Accept': '*/*',
             'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Intel Mac OS X 10.6; rv:7.0.1) Gecko/20100101 Firefox/7.0.1"
           },
@@ -21,7 +20,7 @@ module.exports = function(jpgFilePath, complete){
         return complete(err);
       })
       .on("complete", function(data) {
-        $ = cheerio.load(data);
+        var $ = cheerio.load(data);
         var arr = [];
         $("#main .round_middle,#main .round_middle2").each(function(){
           var bookinfo = $(this).find(".bookinfo2");
