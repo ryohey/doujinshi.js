@@ -5,7 +5,9 @@
   "main": "dojin.js",
   "dependencies" : {
     "restler": "*",
-    "cheerio": "*"
+    "cheerio": "*",
+    "underscore": "*",
+    "mime": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
