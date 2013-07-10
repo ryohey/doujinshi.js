@@ -1,39 +1,110 @@
-var restler = require('restler');
+var restler = require("restler");
 var fs = require("fs");
-var cheerio = require('cheerio');
+var cheerio = require("cheerio");
+var _ = require("underscore");
+var mime = require("mime");
 
-module.exports = function(jpgFilePath, complete){
-  fs.stat(jpgFilePath, function(err, stats) {
-      if (err) return complete(err);
-      restler.post("http://doujinshi.mugimugi.org/IMGSERV/socket.php", {
-          multipart: true,
-          headers:{
-            'Cookie': 'LANG=1; AGE=18', // LANG=1 is English.
-            'Accept': '*/*',
-            'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Intel Mac OS X 10.6; rv:7.0.1) Gecko/20100101 Firefox/7.0.1"
-          },
-          data: {
-              "COLOR": "4",
-              "img": restler.file(jpgFilePath, null, stats.size, null, "image/jpg")
-          }
-      }).on("error", function(err){
-        return complete(err);
-      })
-      .on("complete", function(data) {
-        var $ = cheerio.load(data);
-        var arr = [];
-        $("#main .round_middle,#main .round_middle2").each(function(){
-          var bookinfo = $(this).find(".bookinfo2");
-          var names = bookinfo.find("span.L0");
-          var values = bookinfo.find("span.LPEXACT1");
-          var dict = {};
-          for (var i = 0; i<names.length; ++i){
-            dict[$(names[i]).text().toLowerCase().replace(/:$/,"")] = $(values[i]).text();
-          }
-          dict["cover"] = $(this).find("[alt='cover']").attr("src");
-          arr.push(dict);
-        });
-        complete(undefined, arr);
-      });
+var POST_URL = "http://doujinshi.mugimugi.org/IMGSERV/socket.php";
+
+var SITE_URL = "http://doujinshi.mugimugi.org/search/image/";
+
+var ERROR_MSG_INVALID_URL = "Invalid URL. Please test " + SITE_URL;
+var ERROR_RESPONSES = [
+  {resp: "Uploading URLERRR NO FUCKING PICTURE, FUCK OFF", msg: ERROR_MSG_INVALID_URL},
+  {resp: "Uploading URLError downloading file from host,", msg: ERROR_MSG_INVALID_URL}
+];
+
+module.exports = function(path, callback){
+  resolveFormData(path, function(err, data){
+    if(err) return callback(err);
+    httpRequest(data, callback);
   });
 }
+
+/*
+ * true  : path is the jpg, jpeg, png, gif
+ * false : otherwise
+ */
+function isFile(path){
+  return /[jpg|jpeg|png|gif]$/.test(path);
+}
+
+function isUrl(path) {
+  return /^https?:\/\//.test(path);
+}
+
+function resolveFormData(path, callback){
+  if(isUrl(path)){
+    var data = {
+      "URL" : path
+    };
+    callback(null, data);
+  }else if(isFile(path)){
+    fs.stat(path, function(err, stats) {
+      if (err) return callback(err);
+      var data = {
+        "COLOR": "4",
+        "img": restler.file(path, null, stats.size, null, mime.lookup(path))
+      };
+      callback(null, data);
+    });
+  }else{
+    callback(new Error("Invalid path"));
+  }
+}
+
+function httpRequest(data, callback){
+  restler.post(POST_URL, {
+    multipart: true,
+    headers:{ 'Cookie': 'LANG=1; AGE=18' /* LANG=1 is English.*/ },
+    data: data
+  })
+  .removeAllListeners("error")
+  .removeAllListeners("complete")
+  .on("error", function(err){
+    callback(err);
+  })
+  .on("complete", function(content) {
+    // Check error.
+    // Because it cannot determine the http status code, to determine the content
+    for(var i = 0; i < ERROR_RESPONSES.length; i++){
+      if(content.indexOf(ERROR_RESPONSES[i].resp) >= 0){
+        return callback(new Error(ERROR_RESPONSES[i].msg));
+      }
+    }
+
+    var results = scraping(content);
+    // Error detection.
+    // If an error occurs,  I want to add to the ERROR_RESPONSES.
+    if(results.length === 0){
+      console.error("dojin.js : Empty results");
+    }
+    callback(null, results);
+  });
+}
+
+function scraping(contents) {
+  var $ = cheerio.load(contents);
+  // scraping
+  return $("#main .round_middle,#main .round_middle2").map(function(i, elem){
+
+    var bookinfo = $(elem).find(".bookinfo2");
+
+    // Pick up the keys.
+    var keys = bookinfo.find("span.L0").map(function(i, elem){
+      return $(elem).text().toLowerCase().replace(/:$/, "");
+    });
+
+    // Pick up the values.
+    var values = bookinfo.find("span.LPEXACT1").map(function(i, elem){
+      return $(elem).text();
+    });
+
+    // Don't forget the cover image URL.
+    var cover = {cover: $(this).find("[alt='cover']").attr("src")};
+
+    var pear = _.object(keys, values);
+    return _.extend(pear, cover);
+  });
+}
+
