@@ -1,6 +1,6 @@
 {
   "name": "dojin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "dojin.js is a simple dojinshi metadata search module for nodejs.",
   "main": "dojin.js",
   "dependencies" : {
@@ -24,6 +24,6 @@
     "manga",
     "search"
     ],
-  "author": "permutation",
+  "contributors": ["permutation","mironal"],
   "license": "MIT"
 }
