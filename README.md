@@ -1,8 +1,7 @@
 # dojin.js
 
-[![Build Status](http://jenkins.logginging.org/job/dojin.js%20nightly%20test/badge/icon)](http://jenkins.logginging.org/job/dojin.js%20nightly%20test/)
-
 dojin.js is a simple dojinshi metadata search module for nodejs.
+https://www.doujinshi.org/
 
 # How to install
 
@@ -13,13 +12,12 @@ npm install dojin
 # Example code
 
 ```js
-var dojin = require("dojin");
+const dojin = require("dojin")
 
-dojin("path_to_image", function(err, response){
-  if(err) return console.log(err);
-  console.log(response);
-  // The good information!
-});
+dojin("path_to_image")
+  .then(result){
+    console.log(result)
+  })
 ```
 
 "path_to_image" is
@@ -33,3 +31,12 @@ or
 
 * http://url/to/image
 
+# Command line interface
+
+```bash
+dojin page0001.jpg
+```
+
+```bash
+dojin https://example.com/page0001.jpg
+```
