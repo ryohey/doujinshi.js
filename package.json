@@ -1,17 +1,20 @@
 {
   "name": "dojin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "dojin.js is a simple dojinshi metadata search module for nodejs.",
-  "main": "dojin.js",
-  "dependencies" : {
-    "restler": "*",
+  "main": "./lib/dojin.js",
+  "dependencies": {
     "cheerio": "*",
-    "underscore": "*",
-    "mime": "*"
+    "form-data": "^2.3.1",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
+    "underscore": "*"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run-example": "coffee examples/dojinTest.coffee"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "static": "bin/cli.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +26,10 @@
     "dojin",
     "manga",
     "search"
-    ],
-  "contributors": ["permutation","mironal"],
+  ],
+  "contributors": [
+    "ryohey",
+    "mironal"
+  ],
   "license": "MIT"
 }
