@@ -1,21 +1,21 @@
-# dojin.js
+# doujinshi.js
 
-dojin.js is a simple dojinshi metadata search module for nodejs.
+doujinshi.js is a simple doujinshi metadata search module for nodejs.
 https://www.doujinshi.org/
 
 # How to install
 
 ```sh
-npm install dojin
+npm install doujinshi
 ```
 
 # Example code
 
 ```js
-const dojin = require("dojin")
+const doujinshi = require("doujinshi")
 
-dojin("path_to_image")
-  .then(result){
+doujinshi("path_to_image")
+  .then(result => {
     console.log(result)
   })
 ```
@@ -34,9 +34,9 @@ or
 # Command line interface
 
 ```bash
-dojin page0001.jpg
+doujinshi page0001.jpg
 ```
 
 ```bash
-dojin https://example.com/page0001.jpg
+doujinshi https://example.com/page0001.jpg
 ```
