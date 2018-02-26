@@ -1,8 +1,8 @@
 {
-  "name": "dojin",
-  "version": "0.0.3",
-  "description": "dojin.js is a simple dojinshi metadata search module for nodejs.",
-  "main": "./lib/dojin.js",
+  "name": "doujinshi",
+  "version": "0.0.4",
+  "description": "doujinshi.js is a simple doujinshi metadata search module for nodejs.",
+  "main": "./lib/index.js",
   "dependencies": {
     "cheerio": "*",
     "form-data": "^2.3.1",
@@ -14,16 +14,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "dojin": "bin/cli.js"
+    "doujinshi": "bin/cli.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/permutation/dojin"
+    "url": "https://github.com/ryohey/doujinshi"
   },
   "keywords": [
-    "hentai",
+    "doujinshi",
     "doujin",
-    "dojin",
     "manga",
     "search"
   ],
